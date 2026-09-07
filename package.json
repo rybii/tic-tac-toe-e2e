@@ -1,0 +1,23 @@
+{
+  "name": "tic-tac-toe-e2e",
+  "version": "1.0.0",
+  "description": "Test plan, test cases and Playwright automation for the Tic-Tac-Toe SUT",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:desktop": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:mobile": "playwright test --project=mobile-chrome --project=mobile-safari --project=tablet",
+    "test:headed": "playwright test --project=chromium --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "serve": "node scripts/serve.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.4.1",
+    "typescript": "^7.0.2"
+  },
+  "private": true
+}
