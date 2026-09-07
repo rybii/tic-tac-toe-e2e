@@ -11,7 +11,7 @@ Severity is about impact on the user, priority is my suggestion for fixing order
 | BUG-002 | The two forms validate in two different ways | Minor | Low |
 | BUG-003 | Hard difficulty is not hard, and is weaker than Medium | Major | High |
 | BUG-004 | Persian localisation misses the header subtitle | Minor | Low |
-| BUG-005 | A long player name breaks the page layout | Minor | Medium |
+| BUG-005 | A long player name breaks the layout and puts controls out of reach on a phone | Major | High |
 | BUG-006 | Reset and New Game do the same thing, but Reset looks destructive | Minor | Low |
 | BUG-007 | Validation errors are not linked to the field for screen readers | Minor | Medium |
 | BUG-008 | The active navigation tab is not exposed to assistive tech | Minor | Low |
@@ -153,9 +153,9 @@ Notes - the Tic-Tac-Toe heading staying in Latin script is fine, it reads as a p
 
 ---
 
-## BUG-005 — A long player name breaks the page layout
+## BUG-005 — A long player name breaks the layout and puts controls out of reach on a phone
 
-Severity: Minor Priority: Medium Area: Layout
+Severity: Major Priority: High Area: Layout
 
 Steps
 
@@ -165,7 +165,18 @@ Actual - the greeting is rendered in full on one line. The navigation bar grows 
 
 Expected - either a maximum length on the name field, or the greeting truncated with an ellipsis so the navigation stays inside the card.
 
-Notes - there is no upper bound on the name at all. Related and worth deciding on: the field also accepts markup and control characters. Output is correctly escaped, <img src=x onerror=...> is rendered as text and does not execute, so this is a layout problem and not a security one. Evidence: evidence/bug-005-long-name-overflow.png. Covered by UI-02.
+On a phone the same overflow stops being cosmetic. At 393x727 a 35-character display name widens the card past the viewport, the page scrolls sideways, the left edge of every screen is cut off, and Save Changes is pushed out of reach. The button cannot be clicked at all:
+
+```
+Error: locator.click: Test timeout of 90000ms exceeded
+  <nav class="nav" data-testid="nav"> intercepts pointer events
+```
+
+That came from the GitHub Actions run on Linux, where the name renders wider than on Windows, so the overflow starts at a shorter name. It is the same defect, only easier to reach. Evidence: evidence/bug-005-mobile-controls-pushed-off.png.
+
+Expected on a phone - the greeting truncates, or the name has a maximum length, so no control is ever pushed outside the viewport.
+
+Notes - there is no upper bound on the name at all. Related and worth deciding on: the field also accepts markup and control characters. Output is correctly escaped, <img src=x onerror=...> is rendered as text and does not execute, so this is a layout problem and not a security one. Desktop evidence: evidence/bug-005-long-name-overflow.png. Covered by UI-02 and NEG-08, and it is the reason ProfilePage.rename submits with Enter rather than clicking the button.
 
 ---
 

@@ -14,10 +14,14 @@ export class ProfilePage extends BasePage {
   readonly draws: Locator = this.page.getByTestId('profile-draws');
   readonly deleteAccountButton: Locator = this.page.getByTestId('btn-delete-account');
 
+  /**
+   * Submits from the field rather than the button: a long display name pushes the
+   * button out of a phone viewport, which is BUG-005.
+   */
   async rename(name: string): Promise<void> {
     await test.step(`Rename player to "${name}"`, async () => {
       await this.nameInput.fill(name);
-      await this.saveButton.click();
+      await this.nameInput.press('Enter');
     });
   }
 
