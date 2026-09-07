@@ -1,5 +1,7 @@
 # Tic-Tac-Toe — test plan, test cases and E2E automation
 
+[![e2e](https://github.com/rybii/tic-tac-toe-e2e/actions/workflows/e2e.yml/badge.svg)](https://github.com/rybii/tic-tac-toe-e2e/actions/workflows/e2e.yml)
+
 Take-home task for the Senior Test Engineer role. The system under test is the single index.html file supplied in the task archive; it is kept unchanged in app/.
 
 Stack: Playwright + TypeScript.
@@ -42,7 +44,7 @@ npm run serve          # just serve the app for manual testing
 
 ## Results
 
-14 end-to-end journeys, run in six browser projects - 84 passed, 0 failed, about 2.8 minutes, green on three consecutive runs.
+14 end-to-end journeys, run in six browser projects - 84 passed, 0 failed, about 2.8 minutes locally and about 6 minutes on CI. Every push runs the whole matrix on GitHub Actions and uploads the HTML report as an artifact.
 
 | Project | Engine | Device | Viewport | Touch |
 |---|---|---|---|---|
