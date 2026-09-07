@@ -105,6 +105,30 @@ Long journeys give flakiness more places to hide, so three sources were found an
 
 One failure was not a logic problem at all: a single WebKit journey timed out during a full six-project run, then passed 24 times out of 24 when repeated on its own. Each journey plays several games with a deliberate half-second opponent delay, and the default 30 s test timeout is tight when six projects run at once. The config now allows 90 s per journey and 10 s per assertion, which is honest for this shape of test.
 
+## Running it on CI
+
+.github/workflows/e2e.yml runs the whole matrix on every push, on ubuntu-latest, and uploads
+the HTML report as an artifact. It is worth having for the usual reason, but it earned its
+place on the first run by failing.
+
+E2E-12 registers a player whose name is an XSS payload, 35 characters of markup. On Linux
+that name renders wider than it does on Windows, and at 393x727 it pushes the card past the
+viewport: the page scrolls sideways and Save Changes ends up somewhere the pointer cannot
+reach. Every local run on Windows had passed, 84 of 84, several times over.
+
+That is BUG-005. It had been logged as a cosmetic desktop overflow, severity Minor, on the
+strength of a 132-character name breaking the navigation bar. On a phone the same defect
+makes the profile form unusable, and the payload name is only 35 characters. It is now Major,
+with the screenshot pulled from the failing build.
+
+Two things came out of that. Switching tabs now waits for the new view, because the app swaps
+views in place and clicks were landing mid-swap. And ProfilePage.rename submits with Enter
+rather than clicking the button, since the button is not always reachable - the reason is
+recorded next to the method and in the defect, so it does not read as dodging the bug.
+
+The wider point is that one operating system is not cross-platform coverage. Chromium,
+Firefox and WebKit on Windows agreed with each other and were all wrong about this.
+
 ## Test isolation
 
 Each Playwright test gets a fresh browser context, so localStorage starts empty and no cleanup is needed. Tests register the players they need through the UI; a player fixture does that for the specs that only care about the logged-in state. Everything runs in parallel.
@@ -148,6 +172,5 @@ That form has the nice property of failing the moment a bug is fixed, which is a
 
 ## What I would add next
 
-- A CI workflow publishing the HTML report as an artifact
 - Axe accessibility checks on each view, to catch the class of issue BUG-007 and BUG-008 belong to automatically
 - Visual snapshots for the two themes and both text directions, once there is a build to use as a baseline
